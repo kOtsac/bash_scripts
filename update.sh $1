@@ -1,0 +1,19 @@
+#!/bin/bash
+systemctl stop idena0
+
+version=$1
+cd /home/kotsac/idena0 && wget https://github.com/idena-network/idena-go/releases/download/v$version/idena-node-linux-$version
+mv idena-node-linux-$version idena-go0
+chmod +x idena-go0
+systemctl start idena0
+
+
+systemctl stop idena1
+
+version=$1
+cd /home/kotsac/idena1 && wget https://github.com/idena-network/idena-go/releases/download/v$version/idena-node-linux-$version
+mv idena-node-linux-$version idena-go1
+chmod +x idena-go1
+systemctl start idena1
+journalctl -fu idena1
+
