@@ -38,8 +38,9 @@ sed -i "s/PermitRootLogin yes/PermitRootLogin no/" /etc/ssh/sshd_config
 
 mkdir /home/$uservar/.ssh
 echo $pubkey >> /home/$uservar/.ssh/authorized_keys
-
 systemctl reload sshd.service
+
+# making services
 
 cat > /etc/systemd/system/idena0.service <<EOF
 [Unit]
@@ -78,18 +79,26 @@ RestartSec=60
 WantedBy=multi-user.target
 EOF
 
+# making swap memory
+
 fallocate -l 1G /swapfile2 && sudo chmod 600 /swapfile2 && sudo mkswap /swapfile2 && sudo swapon /swapfile2 && echo '/swapfile2 none swap sw 0 0' | sudo tee -a /etc/fstab
+
+
+# cleaning  cron script
 
 cat > /etc/cron.daily/erize.sh <<EOF
 #!/bin/bash
 systemctl stop idena0.service idena1.service
-rm -R /home/kotsac/idena0/datadir/ipfs
-rm -R /home/kotsac/idena1/datadir/ipfs
-sleep 10
-reboot
+rm -R /home/kotsac/idena0/datadir/ipfs /home/kotsac/idena1/datadir/ipfs
+sleep 5
+sudo reboot
 EOF
 chmod +x /etc/cron.daily/erize.sh
+
+
 # nodes install
+
+
 mkdir /home/$uservar/idena0 /home/$uservar/idena1
 version=$1
 cd /home/$uservar/idena0 && wget https://github.com/idena-network/idena-go/releases/download/v$version/idena-node-linux-$version
@@ -177,6 +186,7 @@ cat /home/$uservar/idena1/datadir/keystore/nodekey
 echo
 
 chown -R $uservar:$uservar /home/$uservar/idena0 /home/$uservar/idena1 
+
 systemctl daemon-reload 
 systemctl enable idena0.service	idena1.service
 systemctl start idena0.service	idena1.service
