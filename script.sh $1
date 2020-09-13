@@ -86,14 +86,14 @@ fallocate -l 1G /swapfile2 && sudo chmod 600 /swapfile2 && sudo mkswap /swapfile
 
 # cleaning  cron script
 
-cat > /etc/cron.daily/erize.sh <<EOF
+cat > /etc/cron.daily/erize <<EOF
 #!/bin/bash
 systemctl stop idena0.service idena1.service
 rm -R /home/kotsac/idena0/datadir/ipfs /home/kotsac/idena1/datadir/ipfs
 sleep 5
 sudo reboot
 EOF
-chmod +x /etc/cron.daily/erize.sh
+chmod +x /etc/cron.daily/erize
 
 
 # nodes install
@@ -106,7 +106,7 @@ mv idena-node-linux-$version idena-go0
 chmod +x idena-go0
 cp /home/$uservar/idena0/idena-go0 /home/$uservar/idena1/idena-go1
 
-cat /home/$uservar/idena0/config.json <<EOF
+cat > /home/$uservar/idena0/config.json <<EOF
 {
   "DataDir": "datadir",
   "P2P": {
@@ -131,7 +131,7 @@ cat /home/$uservar/idena0/config.json <<EOF
 EOF
 chmod +x /home/$uservar/idena0/config.json
 
-cat /home/$uservar/idena1/config.json <<EOF
+cat > /home/$uservar/idena1/config.json <<EOF
 {
   "DataDir": "datadir",
   "P2P": {
