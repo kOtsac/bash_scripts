@@ -9,7 +9,7 @@ mv idena-node-linux-$version idena-go0
 systemctl start idena0
 mv /home/kotsac/idena1/idena-node-linux-$version /home/kotsac/idena1/idena-go1
 systemctl start idena1
-scleep 30
+scleep 60
 PORT=9009
 APIPATH=/home/kotsac/idena0/datadir/
 IP=`ip addr list eth0 | grep "  inet " | head -n 1 | cut -d " " -f 6 | cut -d / -f 1`
