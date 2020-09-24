@@ -30,7 +30,6 @@ curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA4"
 
 
 ####
-#!/bin/bash
 PORT=9010
 APIPATH=/home/kotsac/idena1/datadir/
 COLD_PATH=/home/kotsac/
