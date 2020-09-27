@@ -207,7 +207,7 @@ echo $mycold >> /home/$uservar/idena0/cold0
 read -p 'Enter idena1 cold wallet :' cold1
 echo $mycold >> /home/$uservar/idena1/cold1
 
-cat > /home/$USER/autopay.sh <<EOF
+cat > /home/$uservar/autopay.sh <<EOF
 #!/bin/bash
 PORT=9009
 IP=`ip addr list eth0 | grep "  inet " | head -n 1 | cut -d " " -f 6 | cut -d / -f 1`
