@@ -5,9 +5,7 @@ apt install screen git jq -y
 # Entering variables
 
 IP=`ip addr list eth0 | grep "  inet " | head -n 1 | cut -d " " -f 6 | cut -d / -f 1`
-
 read -p 'Username: ' uservar
-
 read -sp 'Password: ' pass0
 echo
 read -sp 'Repeat Password: ' pass1
@@ -15,22 +13,14 @@ echo
 
 while [ $pass0 != $pass1 ]
 do
-
 echo Passwords does not match. Enter them again
-
 read -sp 'Password: ' pass0
 echo
 read -sp 'Repeat Password: ' pass1
-
-
-
+done
 read -p 'ssh port: ' v_ssh_port
-
 read -p 'Public Key: ' pubkey
-
-
 useradd -m -G sudo -p $(perl -e 'print crypt($ARGV[0], "password")' $pass0) -s /bin/bash $uservar
-
 pass0=0
 sed -i "s/#Port 22/Port $v_ssh_port/" /etc/ssh/sshd_config
 sed -i "s/#PasswordAuthentication yes/PasswordAuthentication no/" /etc/ssh/sshd_config
@@ -164,11 +154,10 @@ mv /home/kotsac/idena1/idena-node-linux-$version /home/kotsac/idena1/idena-go1
 systemctl start idena1
 scleep 30
 PORT=9009
-APIPATH=/home/kotsac/idena0/datadir/
+
 IP=`ip addr list eth0 | grep "  inet " | head -n 1 | cut -d " " -f 6 | cut -d / -f 1`
-CURRENTDIR=$(pwd)
 cd $APIPATH
-API_KEY=$(cat api.key)
+API_KEY=$(cat /home/$USER/idena0/datadir/api.key)
 DATA='{"method": "dna_getCoinbaseAddr","params":[],"id": 8,"key":"'$API_KEY'"}'
 ADDR=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA" | jq -r '.result')
 DATA='{"method": "dna_identity","params":["'$ADDR'"],"id": 9,"key":"'$API_KEY'"}'
@@ -182,10 +171,10 @@ if [ $STATUS = "false" ]; then
 fi
 
 PORT=9010
-APIPATH=/home/kotsac/idena1/datadir/
+APIPATH=
 CURRENTDIR=$(pwd)
 cd $APIPATH
-API_KEY=$(cat api.key)
+API_KEY=$(cat /home/$USER/idena1/datadir/api.key)
 DATA='{"method": "dna_getCoinbaseAddr","params":[],"id": 8,"key":"'$API_KEY'"}'
 ADDR=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA" | jq -r '.result')
 DATA='{"method": "dna_identity","params":["'$ADDR'"],"id": 9,"key":"'$API_KEY'"}'
@@ -213,6 +202,14 @@ cd /home/$uservar/idena1
 sleep 10
 killall idena-go1
 sleep 5
+
+read -p 'Enter adm cold wallet :' mycold
+echo $mycold >> /home/$USER/mycold
+read -p 'Enter idena0 cold wallet :' cold0
+echo $mycold >> /home/$USER/idena0/cold0
+read -p 'Enter idena1 cold wallet :' cold1
+echo $mycold >> /home/$USER/idena1/cold1
+
 echo idena0 apikey
 cat /home/$uservar/idena0/datadir/api.key
 echo
