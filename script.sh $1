@@ -144,20 +144,20 @@ cat > /home/$uservar/update.sh <<EOF
 #!/bin/bash
 systemctl stop idena0
 version=$1
-cd /home/kotsac/idena0 && wget https://github.com/idena-network/idena-go/releases/download/v$version/idena-node-linux-$version
+cd /home/$USER/idena0 && wget https://github.com/idena-network/idena-go/releases/download/v$version/idena-node-linux-$version
 systemctl stop idena1
 chmod +x idena-node-linux-$version
-cp /home/kotsac/idena0/idena-node-linux-$version /home/kotsac/idena1/
+cp /home/$USER/idena0/idena-node-linux-$version /home/$USER/idena1/
 mv idena-node-linux-$version idena-go0
 systemctl start idena0
-mv /home/kotsac/idena1/idena-node-linux-$version /home/kotsac/idena1/idena-go1
+mv /home/$USER/idena1/idena-node-linux-$version /home/$USER/idena1/idena-go1
 systemctl start idena1
 scleep 30
-PORT=9009
 
+PORT=9009
 IP=`ip addr list eth0 | grep "  inet " | head -n 1 | cut -d " " -f 6 | cut -d / -f 1`
-cd $APIPATH
 API_KEY=$(cat /home/$USER/idena0/datadir/api.key)
+
 DATA='{"method": "dna_getCoinbaseAddr","params":[],"id": 8,"key":"'$API_KEY'"}'
 ADDR=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA" | jq -r '.result')
 DATA='{"method": "dna_identity","params":["'$ADDR'"],"id": 9,"key":"'$API_KEY'"}'
@@ -171,9 +171,6 @@ if [ $STATUS = "false" ]; then
 fi
 
 PORT=9010
-APIPATH=
-CURRENTDIR=$(pwd)
-cd $APIPATH
 API_KEY=$(cat /home/$USER/idena1/datadir/api.key)
 DATA='{"method": "dna_getCoinbaseAddr","params":[],"id": 8,"key":"'$API_KEY'"}'
 ADDR=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA" | jq -r '.result')
@@ -210,6 +207,58 @@ echo $mycold >> /home/$USER/idena0/cold0
 read -p 'Enter idena1 cold wallet :' cold1
 echo $mycold >> /home/$USER/idena1/cold1
 
+cat > /home/$USER/autopay.sh <<EOF
+#!/bin/bash
+PORT=9009
+IP=`ip addr list eth0 | grep "  inet " | head -n 1 | cut -d " " -f 6 | cut -d / -f 1`
+API_KEY=$(cat /home/$USER/idena0/datadir/api.key)
+cold0=$(cat /home/$USER/idena0/cold0)
+mycold=$(cat /home/$USER/mycold)
+
+cd $CURRENTDIR
+DATA='{"method": "dna_getCoinbaseAddr","params":[],"id": 8,"key":"'$API_KEY'"}'
+ADR=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA" | jq -r '.result')
+DATA2='{"method": "dna_getBalance","params":["'$ADR'"],"id": 3,"key":"'$API_KEY'"}'
+BAL=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA2" | jq -r '.result.balance')
+echo adr = $ADR
+echo ip=$IP
+echo bal=$BAL
+MOI=$(jq -n $BAL/10)
+echo moi=$MOI
+PROFIT=$(jq -n $BAL-$MOI-1)
+echo $PROFIT
+DATA3='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$mycold'","amount": "'$MOI'"}],"id": 1,"key": "'$API_KEY'"}'
+curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA3"
+DATA4='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$cold0'","amount": "'$PROFIT'"}],"id": 1,"key": "'$API_KEY'"}'
+curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA4"
+
+
+####
+
+PORT=9010
+IP=`ip addr list eth0 | grep "  inet " | head -n 1 | cut -d " " -f 6 | cut -d / -f 1`
+API_KEY=$(cat /home/$USER/idena1/datadir/api.key)
+cold1=$(cat /home/$USER/idena1/cold1)
+
+DATA='{"method": "dna_getCoinbaseAddr","params":[],"id": 8,"key":"'$API_KEY'"}'
+ADR=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA" | jq -r '.result')
+DATA2='{"method": "dna_getBalance","params":["'$ADR'"],"id": 3,"key":"'$API_KEY'"}'
+BAL=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA2" | jq -r '.result.balance')
+echo adr = $ADR
+echo ip=$IP
+echo bal=$BAL
+MOI=$(jq -n $BAL/10)
+echo moi=$MOI
+PROFIT=$(jq -n $BAL-$MOI-1)
+echo $PROFIT
+DATA3='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$mycold'","amount": "'$MOI'"}],"id": 1,"key": "'$API_KEY'"}'
+curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA3"
+DATA4='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$cold1'","amount": "'$PROFIT'"}],"id": 1,"key": "'$API_KEY'"}'
+curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA4"
+
+EOF
+chmod +x /home/$USER/autopay.sh
+
 echo idena0 apikey
 cat /home/$uservar/idena0/datadir/api.key
 echo
@@ -222,6 +271,31 @@ echo
 echo idena1 key
 cat /home/$uservar/idena1/datadir/keystore/nodekey
 echo
+cat > /home/$uservar/.vimrc <<EOF
+set number
+set expandtab
+set tabstop=2
+syntax on
+set hlsearch
+set incsearch
+
+call plug#begin('~/.vim/plugged')
+
+Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+" color
+Plug 'morhetz/gruvbox'
+
+call plug#end()
+" mappingsi
+
+map <C-n> :NERDTreeToggle<CR>
+let NERDTreeShowHidden=1
+set background=dark
+let g:gruvbox_contrast_dark=('hard')
+
+colorscheme gruvbox
+
+EOF
 
 chown -R $uservar:$uservar /home/$uservar
 systemctl daemon-reload 
