@@ -1,15 +1,9 @@
 #!/bin/bash
 PORT=9009
-APIPATH=/home/kotsac/idena0/datadir/
-COLD_PATH=/home/kotsac/
 IP=`ip addr list eth0 | grep "  inet " | head -n 1 | cut -d " " -f 6 | cut -d / -f 1`
-CURRENTDIR=$(pwd)
-
-cd $APIPATH
-API_KEY=$(cat api.key)
-cold=$(cat cold)
-cd $COLD_PATH
-mycold=$(cat mycold)
+API_KEY=$(cat /home/$USER/idena0/datadir/api.key)
+cold0=$(cat /home/$USER/idena0/cold0)
+mycold=$(cat /home/$USER/mycold)
 
 cd $CURRENTDIR
 DATA='{"method": "dna_getCoinbaseAddr","params":[],"id": 8,"key":"'$API_KEY'"}'
@@ -25,24 +19,17 @@ PROFIT=$(jq -n $BAL-$MOI-1)
 echo $PROFIT
 DATA3='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$mycold'","amount": "'$MOI'"}],"id": 1,"key": "'$API_KEY'"}'
 curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA3"
-DATA4='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$cold'","amount": "'$PROFIT'"}],"id": 1,"key": "'$API_KEY'"}'
+DATA4='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$cold0'","amount": "'$PROFIT'"}],"id": 1,"key": "'$API_KEY'"}'
 curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA4"
 
 
 ####
+
 PORT=9010
-APIPATH=/home/kotsac/idena1/datadir/
-COLD_PATH=/home/kotsac/
 IP=`ip addr list eth0 | grep "  inet " | head -n 1 | cut -d " " -f 6 | cut -d / -f 1`
-CURRENTDIR=$(pwd)
+API_KEY=$(cat /home/$USER/idena1/datadir/api.key)
+cold1=$(cat /home/$USER/idena1/cold1)
 
-cd $APIPATH
-API_KEY=$(cat api.key)
-cold=$(cat cold)
-cd $COLD_PATH
-mycold=$(cat mycold)
-
-cd $CURRENTDIR
 DATA='{"method": "dna_getCoinbaseAddr","params":[],"id": 8,"key":"'$API_KEY'"}'
 ADR=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA" | jq -r '.result')
 DATA2='{"method": "dna_getBalance","params":["'$ADR'"],"id": 3,"key":"'$API_KEY'"}'
@@ -56,5 +43,5 @@ PROFIT=$(jq -n $BAL-$MOI-1)
 echo $PROFIT
 DATA3='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$mycold'","amount": "'$MOI'"}],"id": 1,"key": "'$API_KEY'"}'
 curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA3"
-DATA4='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$cold'","amount": "'$PROFIT'"}],"id": 1,"key": "'$API_KEY'"}'
+DATA4='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$cold1'","amount": "'$PROFIT'"}],"id": 1,"key": "'$API_KEY'"}'
 curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA4"
