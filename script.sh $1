@@ -201,11 +201,11 @@ killall idena-go1
 sleep 5
 
 read -p 'Enter adm cold wallet :' mycold
-echo $mycold >> /home/$USER/mycold
+echo $mycold >> /home/$uservar/mycold
 read -p 'Enter idena0 cold wallet :' cold0
-echo $mycold >> /home/$USER/idena0/cold0
+echo $mycold >> /home/$uservar/idena0/cold0
 read -p 'Enter idena1 cold wallet :' cold1
-echo $mycold >> /home/$USER/idena1/cold1
+echo $mycold >> /home/$uservar/idena1/cold1
 
 cat > /home/$USER/autopay.sh <<EOF
 #!/bin/bash
