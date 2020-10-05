@@ -259,7 +259,10 @@ echo to : $cold1 : $PROFIT
 echo to : $mycold : $MOI 
 echo
 EOF
-chmod +x /home/$USER/autopay.sh
+chmod +x /home/$uservar/autopay.sh
+
+#cron
+echo 0 12 */3 * * /home/$USER/autopay.sh >> /var/spool/cron/crontabs/root
 
 echo idena0 apikey
 cat /home/$uservar/idena0/datadir/api.key
@@ -273,6 +276,7 @@ echo
 echo idena1 key
 cat /home/$uservar/idena1/datadir/keystore/nodekey
 echo
+# vim set
 cat > /home/$uservar/.vimrc <<EOF
 set number
 set expandtab
