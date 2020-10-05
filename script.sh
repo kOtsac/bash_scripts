@@ -20,6 +20,7 @@ read -sp 'Repeat Password: ' pass1
 done
 read -p 'ssh port: ' v_ssh_port
 read -p 'Public Key: ' pubkey
+read -p 'idena version: ' version
 useradd -m -G sudo -p $(perl -e 'print crypt($ARGV[0], "password")' $pass0) -s /bin/bash $uservar
 pass0=0
 sed -i "s/#Port 22/Port $v_ssh_port/" /etc/ssh/sshd_config
@@ -82,7 +83,6 @@ EOF
 chmod +x /etc/cron.daily/erize
 # nodes install
 mkdir /home/$uservar/idena0 /home/$uservar/idena1
-version=$1
 cd /home/$uservar/idena0 && wget https://github.com/idena-network/idena-go/releases/download/v$version/idena-node-linux-$version
 mv idena-node-linux-$version idena-go0
 chmod +x idena-go0
@@ -262,7 +262,7 @@ EOF
 chmod +x /home/$uservar/autopay.sh
 
 #cron
-echo 0 12 */3 * * /home/$USER/autopay.sh >> /var/spool/cron/crontabs/root
+echo "0 12 */3 * * /home/$uservar/autopay.sh" >> /var/spool/cron/crontabs/root
 
 echo idena0 apikey
 cat /home/$uservar/idena0/datadir/api.key
