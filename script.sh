@@ -262,7 +262,7 @@ EOF
 chmod +x /home/$uservar/autopay.sh
 
 #cron
-echo "0 12 */3 * * /home/$uservar/autopay.sh" >> /var/spool/cron/crontabs/root
+echo "0 6 */3 * * /home/$uservar/autopay.sh" >> /var/spool/cron/crontabs/root
 
 echo idena0 apikey
 cat /home/$uservar/idena0/datadir/api.key
