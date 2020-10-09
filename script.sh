@@ -183,7 +183,7 @@ if [ $STATUS = "false" ]; then
    DATA='{"method": "dna_becomeOnline","params": [{"nonce": 0,"epoch":'$EPOCH'}],"id": 1,"key":"'$API_KEY'"}'
    curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA"
 fi
-cd $CURRENTDIR
+
 
 EOF
 chmod +x /home/$uservar/update.sh
