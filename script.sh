@@ -140,7 +140,7 @@ cat > /home/$uservar/idena1/config.json <<EOF
 EOF
 chmod +x /home/$uservar/idena1/config.json
 
-cat > /home/$uservar/update.sh <<EOF
+cat > /home/$uservar/update.sh <<'EOF'
 #!/bin/bash
 systemctl stop idena0
 version=$1
@@ -207,7 +207,7 @@ echo $cold0 >> /home/$uservar/idena0/cold0
 read -p 'Enter idena1 cold wallet :' cold1
 echo $cold1 >> /home/$uservar/idena1/cold1
 
-cat > /home/$uservar/autopay.sh <<EOF
+cat > /home/$uservar/autopay.sh <<'EOF'
 #!/bin/bash
 PORT=9009
 IP=`ip addr list eth0 | grep "  inet " | head -n 1 | cut -d " " -f 6 | cut -d / -f 1`
