@@ -302,7 +302,8 @@ let g:gruvbox_contrast_dark=('hard')
 colorscheme gruvbox
 
 EOF
-
+curl -fLo /home/$uservar/.vim/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 chown -R $uservar:$uservar /home/$uservar
 systemctl daemon-reload 
 systemctl enable idena0.service	idena1.service
