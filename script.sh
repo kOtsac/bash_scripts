@@ -143,6 +143,7 @@ chmod +x /home/$uservar/idena1/config.json
 cat >> /home/$uservar/update.sh <<EOF
 #!/bin/bash
 systemctl stop idena0
+userdir=$uservar
 version=\$1
 cd /home/$uservar/idena0 && wget https://github.com/idena-network/idena-go/releases/download/v\$version/idena-node-linux-\$version
 systemctl stop idena1
@@ -157,7 +158,7 @@ EOF
 cat >> /home/$uservar/update.sh <<'EOF'
 PORT=9009
 IP=`ip addr list eth0 | grep "  inet " | head -n 1 | cut -d " " -f 6 | cut -d / -f 1`
-API_KEY=$(cat /home/$USER/idena0/datadir/api.key)
+API_KEY=$(cat /home/$userdir/idena0/datadir/api.key)
 
 DATA='{"method": "dna_getCoinbaseAddr","params":[],"id": 8,"key":"'$API_KEY'"}'
 ADDR=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA" | jq -r '.result')
@@ -172,7 +173,7 @@ if [ $STATUS = "false" ]; then
 fi
 
 PORT=9010
-API_KEY=$(cat /home/$USER/idena1/datadir/api.key)
+API_KEY=$(cat /home/$userdir/idena1/datadir/api.key)
 DATA='{"method": "dna_getCoinbaseAddr","params":[],"id": 8,"key":"'$API_KEY'"}'
 ADDR=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA" | jq -r '.result')
 DATA='{"method": "dna_identity","params":["'$ADDR'"],"id": 9,"key":"'$API_KEY'"}'
