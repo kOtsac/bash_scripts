@@ -140,20 +140,21 @@ cat > /home/$uservar/idena1/config.json <<EOF
 EOF
 chmod +x /home/$uservar/idena1/config.json
 
-cat > /home/$uservar/update.sh <<'EOF'
+cat >> /home/$uservar/update.sh <<EOF
 #!/bin/bash
 systemctl stop idena0
-version=$1
-cd /home/$USER/idena0 && wget https://github.com/idena-network/idena-go/releases/download/v$version/idena-node-linux-$version
+version=\$1
+cd /home/$uservar/idena0 && wget https://github.com/idena-network/idena-go/releases/download/v\$version/idena-node-linux-\$version
 systemctl stop idena1
-chmod +x idena-node-linux-$version
-cp /home/$USER/idena0/idena-node-linux-$version /home/$USER/idena1/
-mv idena-node-linux-$version idena-go0
+chmod +x idena-node-linux-\$version
+cp /home/$uservar/idena0/idena-node-linux-\$version /home/$uservar/idena1/
+mv idena-node-linux-\$version idena-go0
 systemctl start idena0
-mv /home/$USER/idena1/idena-node-linux-$version /home/$USER/idena1/idena-go1
+mv /home/$uservar/idena1/idena-node-linux-\$version /home/$uservar/idena1/idena-go1
 systemctl start idena1
 scleep 30
-
+EOF
+cat >> /home/$uservar/update.sh <<'EOF'
 PORT=9009
 IP=`ip addr list eth0 | grep "  inet " | head -n 1 | cut -d " " -f 6 | cut -d / -f 1`
 API_KEY=$(cat /home/$USER/idena0/datadir/api.key)
