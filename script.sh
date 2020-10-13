@@ -153,7 +153,7 @@ mv idena-node-linux-\$version idena-go0
 systemctl start idena0
 mv /home/$uservar/idena1/idena-node-linux-\$version /home/$uservar/idena1/idena-go1
 systemctl start idena1
-scleep 60
+sleep 60
 EOF
 cat >> /home/$uservar/update.sh <<'EOF'
 PORT=9009
