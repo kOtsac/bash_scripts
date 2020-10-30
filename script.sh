@@ -264,10 +264,10 @@ EOF
 chmod +x /home/$uservar/autopay.sh
 
 #cron
-crontab -l > foocron
-echo "* * * * * /home/$uservar/autopay.sh" >> foocron
-crontab foocron
-rm foocron
+#crontab -l > foocron
+#echo "0 6 */3 * * /home/$uservar/autopay.sh" >> foocron
+#crontab foocron
+#rm foocron
 
 echo idena0 apikey
 cat /home/$uservar/idena0/datadir/api.key
