@@ -8,7 +8,7 @@ ADR=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA" | jq 
 if [ "$ADRS" != "$ADR" ];
 then
         systemctl restart idena0.service
-        echo "idena0" date  >> /home/kotsac/logwatch.txt
+        echo "idena0" `date`  >> /home/kotsac/logwatch.txt
 else
         echo idena0 looks fine
 fi
