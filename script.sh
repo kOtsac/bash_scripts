@@ -263,8 +263,14 @@ echo to : $mycold : $MOI
 echo
 EOF
 chmod +x /home/$uservar/autopay.sh
+cat >> /home/$uservar/update.sh << EOF
+#!/bin/bash
+systemctl stop idena0.service idena1.service
+rm -R /home/$uservar/idena0/datadir/ipfs /home/$uservar/idena0/datadir/logs/ /home/$uservar/idena1/datadir/logs/ /home/$uservar/idena1/datadir/ipfs /home/$uservar/hopr-chat/log.txt
+sleep 5
+systemctl start idena0.service idena1.service
 
-
+EOF
 echo "0 6 */3 * * /home/$uservar/autopay.sh" >> /var/spool/cron/crontab/root
 echo "5 7 * * * /home/$uservar/erize.sh" >> /var/spool/cron/crontab/root
 
