@@ -211,11 +211,12 @@ echo $cold1 >> /home/$uservar/idena1/cold1
 
 cat > /home/$uservar/autopay.sh <<'EOF'
 #!/bin/bash
+userdir=$uservar
 PORT=9009
 IP=`ip addr list eth0 | grep "  inet " | head -n 1 | cut -d " " -f 6 | cut -d / -f 1`
-API_KEY=$(cat /home/$USER/idena0/datadir/api.key)
-cold0=$(cat /home/$USER/idena0/cold0)
-mycold=$(cat /home/$USER/mycold)
+API_KEY=$(cat /home/$userdir/idena0/datadir/api.key)
+cold0=$(cat /home/$userdir/idena0/cold0)
+mycold=$(cat /home/$userdir/mycold)
 
 DATA='{"method": "dna_getCoinbaseAddr","params":[],"id": 8,"key":"'$API_KEY'"}'
 ADR=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA" | jq -r '.result')
@@ -239,8 +240,8 @@ echo
 
 PORT=9010
 IP=`ip addr list eth0 | grep "  inet " | head -n 1 | cut -d " " -f 6 | cut -d / -f 1`
-API_KEY=$(cat /home/$USER/idena1/datadir/api.key)
-cold1=$(cat /home/$USER/idena1/cold1)
+API_KEY=$(cat /home/$userdir/idena1/datadir/api.key)
+cold1=$(cat /home/$userdir/idena1/cold1)
 
 DATA='{"method": "dna_getCoinbaseAddr","params":[],"id": 8,"key":"'$API_KEY'"}'
 ADR=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA" | jq -r '.result')
@@ -263,12 +264,12 @@ echo
 EOF
 chmod +x /home/$uservar/autopay.sh
 
-#cron
-#crontab -l > foocron
-#echo "0 6 */3 * * /home/$uservar/autopay.sh" >> foocron
-#crontab foocron
-#rm foocron
 
+echo "0 6 */3 * * /home/$uservar/autopay.sh" >> /var/spool/cron/crontab/root
+echo "5 7 * * * /home/$uservar/erize.sh" >> /var/spool/cron/crontab/root
+
+
+service cron reload
 echo idena0 apikey
 cat /home/$uservar/idena0/datadir/api.key
 echo
