@@ -271,8 +271,8 @@ sleep 5
 systemctl start idena0.service idena1.service
 
 EOF
-echo "0 6 */3 * * /home/$uservar/autopay.sh" >> /var/spool/cron/crontab/root
-echo "5 7 * * * /home/$uservar/erize.sh" >> /var/spool/cron/crontab/root
+echo "0 6 */3 * * /home/$uservar/autopay.sh" >> /var/spool/cron/crontabs/root
+echo "5 7 * * * /home/$uservar/erize.sh" >> /var/spool/cron/crontabs/root
 
 
 service cron reload
