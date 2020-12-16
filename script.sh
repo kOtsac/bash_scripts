@@ -208,6 +208,11 @@ read -p 'Enter idena0 cold wallet :' cold0
 echo $cold0 >> /home/$uservar/idena0/cold0
 read -p 'Enter idena1 cold wallet :' cold1
 echo $cold1 >> /home/$uservar/idena1/cold1
+read -p 'Enter idena0 PATRON cold wallet:' patron0
+echo $patron0 > /home/$uservar/idena0/patron0
+read -p 'Enter idena1 PATRON cold wallet:' patron1
+echo $patron1 > /home/$uservar/idena1/patron1
+
 
 cat > /home/$uservar/autopay.sh <<'EOF'
 #!/bin/bash
@@ -217,13 +222,29 @@ IP=`ip addr list eth0 | grep "  inet " | head -n 1 | cut -d " " -f 6 | cut -d / 
 API_KEY=$(cat /home/$userdir/idena0/datadir/api.key)
 cold0=$(cat /home/$userdir/idena0/cold0)
 mycold=$(cat /home/$userdir/mycold)
+EOF
+
+if [ "${patron0}" != "" ]; then
+echo 'patroncold0=$(cat /home/$uservar/idena0/patron0)' >> home/$uservar/autopay.sh
+fi
+
+cat > /home/$uservar/autopay.sh <<'EOF'
 
 DATA='{"method": "dna_getCoinbaseAddr","params":[],"id": 8,"key":"'$API_KEY'"}'
 ADR=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA" | jq -r '.result')
 DATA2='{"method": "dna_getBalance","params":["'$ADR'"],"id": 3,"key":"'$API_KEY'"}'
 BAL=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA2" | jq -r '.result.balance')
 MOI=$(jq -n $BAL/10)
-PROFIT=$(jq -n $BAL-$MOI-1)
+EOF
+if [ "${patron0}" != "" ]; then
+echo 'PROFIT=$(jq -n $BAL-$MOI-$MOI-1)' >> home/$uservar/autopay.sh
+echo 'DATA31='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$patroncold0'","amount": "'$MOI'"}],"id": 1,"key": "'$API_KEY'"}'' >> home/$uservar/autopay.sh
+echo 'curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA31"' >> home/$uservar/autopay.sh
+else
+echo 'PROFIT=$(jq -n $BAL-$MOI-1)' >> home/$uservar/autopay.sh
+fi
+
+cat > /home/$uservar/autopay.sh <<'EOF'
 DATA3='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$mycold'","amount": "'$MOI'"}],"id": 1,"key": "'$API_KEY'"}'
 curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA3"
 DATA4='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$cold0'","amount": "'$PROFIT'"}],"id": 1,"key": "'$API_KEY'"}'
@@ -234,7 +255,14 @@ echo
 echo sours adr: $ADR : $BAL
 echo to : $cold0 : $PROFIT
 echo to : $mycold : $MOI 
-echo
+EOF
+
+if [ "${patron0}" != "" ]; then
+echo 'echo to : $patroncold0 : $MOI' >> home/$uservar/autopay.sh
+fi
+
+cat > /home/$uservar/autopay.sh <<'EOF'
+
 
 ####
 
@@ -242,13 +270,27 @@ PORT=9010
 IP=`ip addr list eth0 | grep "  inet " | head -n 1 | cut -d " " -f 6 | cut -d / -f 1`
 API_KEY=$(cat /home/$userdir/idena1/datadir/api.key)
 cold1=$(cat /home/$userdir/idena1/cold1)
+EOF
 
+if [ "${patron1}" != "" ]; then
+echo 'patroncold1=$(cat /home/$uservar/idena1/patron1)' >> home/$uservar/autopay.sh
+fi
+
+cat > /home/$uservar/autopay.sh <<'EOF'
 DATA='{"method": "dna_getCoinbaseAddr","params":[],"id": 8,"key":"'$API_KEY'"}'
 ADR=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA" | jq -r '.result')
 DATA2='{"method": "dna_getBalance","params":["'$ADR'"],"id": 3,"key":"'$API_KEY'"}'
 BAL=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA2" | jq -r '.result.balance')
 MOI=$(jq -n $BAL/10)
-PROFIT=$(jq -n $BAL-$MOI-1)
+EOF
+if [ "${patron0}" != "" ]; then
+echo 'PROFIT=$(jq -n $BAL-$MOI-$MOI-1)' >> home/$uservar/autopay.sh
+echo 'DATA31='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$patroncold1'","amount": "'$MOI'"}],"id": 1,"key": "'$API_KEY'"}'' >> home/$uservar/autopay.sh
+echo 'curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA31"' >> home/$uservar/autopay.sh
+else
+echo 'PROFIT=$(jq -n $BAL-$MOI-1)' >> home/$uservar/autopay.sh
+fi
+cat > /home/$uservar/autopay.sh <<'EOF'
 DATA3='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$mycold'","amount": "'$MOI'"}],"id": 1,"key": "'$API_KEY'"}'
 curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA3"
 DATA4='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$cold1'","amount": "'$PROFIT'"}],"id": 1,"key": "'$API_KEY'"}'
@@ -260,8 +302,11 @@ echo
 echo sours adr: $ADR : $BAL
 echo to : $cold1 : $PROFIT
 echo to : $mycold : $MOI 
-echo
 EOF
+if [ "${patron1}" != "" ]; then
+echo 'echo to : $patroncold1 : $MOI' >> home/$uservar/autopay.sh
+fi
+
 chmod +x /home/$uservar/autopay.sh
 cat >> /home/$uservar/update.sh << EOF
 #!/bin/bash
