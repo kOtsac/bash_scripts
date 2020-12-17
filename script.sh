@@ -215,9 +215,10 @@ read -p 'Enter idena1 PATRON cold wallet:' patron1
 echo $patron1 > /home/$uservar/idena1/patron1
 
 
+
+echo '#!/bin/bash' >> home/$uservar/autopay.sh
+echo 'userdir=$uservar' >> home/$uservar/autopay.sh
 cat >> /home/$uservar/autopay.sh <<'EOF'
-#!/bin/bash
-userdir=$uservar
 PORT=9009
 IP=`ip addr list eth0 | grep "  inet " | head -n 1 | cut -d " " -f 6 | cut -d / -f 1`
 API_KEY=$(cat /home/$userdir/idena0/datadir/api.key)
