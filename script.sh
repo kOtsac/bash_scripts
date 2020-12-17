@@ -81,7 +81,7 @@ sleep 5
 systemctl start idena0.service idena1.service
 
 EOF
-chmod +x /etc/$uservar/erize.sh
+chmod +x /home/$uservar/erize.sh
 # nodes install
 mkdir /home/$uservar/idena0 /home/$uservar/idena1
 cd /home/$uservar/idena0 && wget https://github.com/idena-network/idena-go/releases/download/v$version/idena-node-linux-$version
@@ -334,6 +334,7 @@ API_KEY=$(cat /home/kotsac/idena1/datadir/api.key)
 DATA='{"method": "dna_getCoinbaseAddr","params":[],"id": 8,"key":"'$API_KEY'"}'
 curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA" | jq -r '.result' > /home/kotsac/adress1
 EOF
+chmod +x /home/$uservar/adresses.sh
 
 
 echo "0 6 */3 * * /home/$uservar/autopay.sh" >> /var/spool/cron/crontabs/root
