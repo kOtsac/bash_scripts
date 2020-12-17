@@ -318,25 +318,79 @@ sleep 5
 systemctl start idena0.service idena1.service
 
 EOF
+echo '#!/bin/bash' >> home/$uservar/adresses.sh
+echo 'userdir=$uservar' >> home/$uservar/adresses.sh 
 cat >> /home/$uservar/adresses.sh <<'EOF'
-#!/bin/bash
 PORT=9009
 
 IP=`ip addr list eth0 | grep "  inet " | head -n 1 | cut -d " " -f 6 | cut -d / -f 1`
-API_KEY=$(cat /home/kotsac/idena0/datadir/api.key)
+API_KEY=$(cat /home/$userdir/idena0/datadir/api.key)
 DATA='{"method": "dna_getCoinbaseAddr","params":[],"id": 8,"key":"'$API_KEY'"}'
-curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA" | jq -r '.result' > /home/kotsac/adress0
+curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA" | jq -r '.result' > /home/$userdir/adress0
 
 
 PORT=9010
 
-API_KEY=$(cat /home/kotsac/idena1/datadir/api.key)
+API_KEY=$(cat /home/$userdir/idena1/datadir/api.key)
 DATA='{"method": "dna_getCoinbaseAddr","params":[],"id": 8,"key":"'$API_KEY'"}'
-curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA" | jq -r '.result' > /home/kotsac/adress1
+curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA" | jq -r '.result' > /home/$userdir/adress1
 EOF
 chmod +x /home/$uservar/adresses.sh
+####
+echo '#!/bin/bash' >> home/$uservar/watchdog.sh
+echo 'userdir=$uservar' >> home/$uservar/watchdog.sh
+cat >> /home/$uservar/watchdog.sh <<'EOF'
+PORT=9009
+hour=$(date +"%H")
+if [ "$hour" != 14 ];
+then
+ADRS=$(cat /home/$userdir/adress0)
+IP=`ip addr list eth0 | grep "  inet " | head -n 1 | cut -d " " -f 6 | cut -d / -f 1`
+API_KEY=$(cat /home/$userdir/idena0/datadir/api.key)
+DATA='{"method": "dna_getCoinbaseAddr","params":[],"id": 8,"key":"'$API_KEY'"}'
+ADR=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA" | jq -r '.result')
+if [ "$ADRS" != "$ADR" ];
+then
+        rm -R /home/$userdir/idena0/datadir/idenachain.db
+        sleep 2
+        cp -R /home/$userdir/idena1/datadir/idenachain.db /home/$userdir/idena0/datadir/
+        sleep 2
+        chown -R $userdir:$userdir /home/$userdir/idena0/datadir/idenachain.db
+        systemctl restart idena0.service
+        echo "idena0" `date` `$ADRS`  >> /home/$userdir/logwatch.txt
+        sleep 60
+        /home/$userdir/up.sh
+else
+        echo idena0 looks fine
+fi
+PORT=9010
+ADRS=$(cat /home/$userdir/adress1)
+API_KEY=$(cat /home/$userdir/idena1/datadir/api.key)
+DATA='{"method": "dna_getCoinbaseAddr","params":[],"id": 8,"key":"'$API_KEY'"}'
+ADR=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA" | jq -r '.result')
+if [ "$ADRS" != "$ADR" ];
+then
+        rm -R /home/$userdir/idena1/datadir/idenachain.db
+        sleep 2
+        cp -R /home/$userdir/idena0/datadir/idenachain.db /home/$userdir/idena1/datadir/
+        sleep 2
+        chown -R $userdir:$userdir /home/$userdirc/idena1/datadir/idenachain.db
+        systemctl restart idena1.service
+        echo "idena1" `date` `$ADRS`  >> /home/$userdir/logwatch.txt
 
+        sleep 60
+        /home/$userdir/up.sh
+else
+        echo idena1 looks fine
+fi
 
+echo watched `date` >> /home/$userdir/sudolog.txt
+else
+        echo validation time
+fi
+EOF
+chmod +x /home/$uservar/watchdog.sh
+####
 echo "0 6 */3 * * /home/$uservar/autopay.sh" >> /var/spool/cron/crontabs/root
 echo "5 7 * * * /home/$uservar/erize.sh" >> /var/spool/cron/crontabs/root
 
