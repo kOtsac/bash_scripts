@@ -239,9 +239,10 @@ BAL=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA2" | jq
 MOI=$(jq -n $BAL/10)
 EOF
 if [ "${patron0}" != "" ]; then
-echo 'PROFIT=$(jq -n $BAL-$MOI-$MOI-1)' >> /home/$uservar/autopay.sh
-echo "DATA31='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$patroncold0'","amount": "'$MOI'"}],"id": 1,"key": "'$API_KEY'"}'" >> /home/$uservar/autopay.sh
-echo 'curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA31"' >> /home/$uservar/autopay.sh
+cat >> /home/$uservar/autopay.sh <<'EOF'
+PROFIT=$(jq -n $BAL-$MOI-$MOI-1)
+DATA31='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$patroncold0'","amount": "'$MOI'"}],"id": 1,"key": "'$API_KEY'"}'
+curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA31"
 else
 echo 'PROFIT=$(jq -n $BAL-$MOI-1)' >> /home/$uservar/autopay.sh
 fi
@@ -286,9 +287,10 @@ BAL=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA2" | jq
 MOI=$(jq -n $BAL/10)
 EOF
 if [ "${patron0}" != "" ]; then
-echo 'PROFIT=$(jq -n $BAL-$MOI-$MOI-1)' >> /home/$uservar/autopay.sh
-echo "DATA31='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$patroncold1'","amount": "'$MOI'"}],"id": 1,"key": "'$API_KEY'"}'" >> /home/$uservar/autopay.sh
-echo 'curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA31"' >> /home/$uservar/autopay.sh
+cat >> /home/$uservar/autopay.sh <<'EOF'
+PROFIT=$(jq -n $BAL-$MOI-$MOI-1)
+DATA31='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$patroncold0'","amount": "'$MOI'"}],"id": 1,"key": "'$API_KEY'"}'
+curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA31"
 else
 echo 'PROFIT=$(jq -n $BAL-$MOI-1)' >> /home/$uservar/autopay.sh
 fi
