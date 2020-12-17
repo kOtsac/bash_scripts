@@ -73,14 +73,15 @@ EOF
 
 fallocate -l 1G /swapfile2 && sudo chmod 600 /swapfile2 && sudo mkswap /swapfile2 && sudo swapon /swapfile2 && echo '/swapfile2 none swap sw 0 0' | sudo tee -a /etc/fstab
 
-cat > /etc/cron.daily/erize <<EOF
+cat > /home/$uservar/erize.sh <<EOF
 #!/bin/bash
 systemctl stop idena0.service idena1.service
-rm -R /home/$uservar/idena0/datadir/ipfs /home/$uservar/idena1/datadir/ipfs
-sleep 10
-sudo reboot
+rm -R /home/$uservar/idena0/datadir/ipfs /home/$uservar/idena0/datadir/logs/ /home/$uservar/idena1/datadir/logs/ /home/$uservar/idena1/datadir/ipfs /home/$uservar/hopr-chat/log.txt
+sleep 5
+systemctl start idena0.service idena1.service
+
 EOF
-chmod +x /etc/cron.daily/erize
+chmod +x /etc/$uservar/erize.sh
 # nodes install
 mkdir /home/$uservar/idena0 /home/$uservar/idena1
 cd /home/$uservar/idena0 && wget https://github.com/idena-network/idena-go/releases/download/v$version/idena-node-linux-$version
@@ -214,7 +215,7 @@ read -p 'Enter idena1 PATRON cold wallet:' patron1
 echo $patron1 > /home/$uservar/idena1/patron1
 
 
-cat > /home/$uservar/autopay.sh <<'EOF'
+cat >> /home/$uservar/autopay.sh <<'EOF'
 #!/bin/bash
 userdir=$uservar
 PORT=9009
@@ -228,7 +229,7 @@ if [ "${patron0}" != "" ]; then
 echo 'patroncold0=$(cat /home/$uservar/idena0/patron0)' >> home/$uservar/autopay.sh
 fi
 
-cat > /home/$uservar/autopay.sh <<'EOF'
+cat >> /home/$uservar/autopay.sh <<'EOF'
 
 DATA='{"method": "dna_getCoinbaseAddr","params":[],"id": 8,"key":"'$API_KEY'"}'
 ADR=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA" | jq -r '.result')
@@ -244,7 +245,7 @@ else
 echo 'PROFIT=$(jq -n $BAL-$MOI-1)' >> home/$uservar/autopay.sh
 fi
 
-cat > /home/$uservar/autopay.sh <<'EOF'
+cat >> /home/$uservar/autopay.sh <<'EOF'
 DATA3='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$mycold'","amount": "'$MOI'"}],"id": 1,"key": "'$API_KEY'"}'
 curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA3"
 DATA4='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$cold0'","amount": "'$PROFIT'"}],"id": 1,"key": "'$API_KEY'"}'
@@ -261,7 +262,7 @@ if [ "${patron0}" != "" ]; then
 echo 'echo to : $patroncold0 : $MOI' >> home/$uservar/autopay.sh
 fi
 
-cat > /home/$uservar/autopay.sh <<'EOF'
+cat >> /home/$uservar/autopay.sh <<'EOF'
 
 
 ####
@@ -276,7 +277,7 @@ if [ "${patron1}" != "" ]; then
 echo 'patroncold1=$(cat /home/$uservar/idena1/patron1)' >> home/$uservar/autopay.sh
 fi
 
-cat > /home/$uservar/autopay.sh <<'EOF'
+cat >> /home/$uservar/autopay.sh <<'EOF'
 DATA='{"method": "dna_getCoinbaseAddr","params":[],"id": 8,"key":"'$API_KEY'"}'
 ADR=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA" | jq -r '.result')
 DATA2='{"method": "dna_getBalance","params":["'$ADR'"],"id": 3,"key":"'$API_KEY'"}'
@@ -290,7 +291,7 @@ echo 'curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA31"' >>
 else
 echo 'PROFIT=$(jq -n $BAL-$MOI-1)' >> home/$uservar/autopay.sh
 fi
-cat > /home/$uservar/autopay.sh <<'EOF'
+cat >> /home/$uservar/autopay.sh <<'EOF'
 DATA3='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$mycold'","amount": "'$MOI'"}],"id": 1,"key": "'$API_KEY'"}'
 curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA3"
 DATA4='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$cold1'","amount": "'$PROFIT'"}],"id": 1,"key": "'$API_KEY'"}'
@@ -316,6 +317,24 @@ sleep 5
 systemctl start idena0.service idena1.service
 
 EOF
+cat >> /home/$uservar/adresses.sh <<'EOF'
+#!/bin/bash
+PORT=9009
+
+IP=`ip addr list eth0 | grep "  inet " | head -n 1 | cut -d " " -f 6 | cut -d / -f 1`
+API_KEY=$(cat /home/kotsac/idena0/datadir/api.key)
+DATA='{"method": "dna_getCoinbaseAddr","params":[],"id": 8,"key":"'$API_KEY'"}'
+curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA" | jq -r '.result' > /home/kotsac/adress0
+
+
+PORT=9010
+
+API_KEY=$(cat /home/kotsac/idena1/datadir/api.key)
+DATA='{"method": "dna_getCoinbaseAddr","params":[],"id": 8,"key":"'$API_KEY'"}'
+curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA" | jq -r '.result' > /home/kotsac/adress1
+EOF
+
+
 echo "0 6 */3 * * /home/$uservar/autopay.sh" >> /var/spool/cron/crontabs/root
 echo "5 7 * * * /home/$uservar/erize.sh" >> /var/spool/cron/crontabs/root
 
