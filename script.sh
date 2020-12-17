@@ -217,7 +217,7 @@ echo $patron1 > /home/$uservar/idena1/patron1
 
 
 echo '#!/bin/bash' >> /home/$uservar/autopay.sh
-echo 'userdir=$uservar' >> /home/$uservar/autopay.sh
+echo userdir=$uservar >> /home/$uservar/autopay.sh
 cat >> /home/$uservar/autopay.sh <<'EOF'
 PORT=9009
 IP=`ip addr list eth0 | grep "  inet " | head -n 1 | cut -d " " -f 6 | cut -d / -f 1`
@@ -319,7 +319,7 @@ systemctl start idena0.service idena1.service
 
 EOF
 echo '#!/bin/bash' >> /home/$uservar/adresses.sh
-echo 'userdir=$uservar' >> /home/$uservar/adresses.sh 
+echo userdir=$uservar >> /home/$uservar/adresses.sh 
 cat >> /home/$uservar/adresses.sh <<'EOF'
 PORT=9009
 
@@ -337,8 +337,8 @@ curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA" | jq -r '.r
 EOF
 chmod +x /home/$uservar/adresses.sh
 ####
-echo '#!/bin/bash' >> home/$uservar/watchdog.sh
-echo 'userdir=$uservar' >> /home/$uservar/watchdog.sh
+echo '#!/bin/bash' >> /home/$uservar/watchdog.sh
+echo userdir=$uservar >> /home/$uservar/watchdog.sh
 cat >> /home/$uservar/watchdog.sh <<'EOF'
 PORT=9009
 hour=$(date +"%H")
