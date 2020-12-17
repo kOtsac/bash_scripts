@@ -204,11 +204,11 @@ killall idena-go1
 sleep 5
 
 read -p 'Enter adm cold wallet :' mycold
-echo $mycold >> /home/$uservar/mycold
+echo $mycold > /home/$uservar/mycold
 read -p 'Enter idena0 cold wallet :' cold0
-echo $cold0 >> /home/$uservar/idena0/cold0
+echo $cold0 > /home/$uservar/idena0/cold0
 read -p 'Enter idena1 cold wallet :' cold1
-echo $cold1 >> /home/$uservar/idena1/cold1
+echo $cold1 > /home/$uservar/idena1/cold1
 read -p 'Enter idena0 PATRON cold wallet:' patron0
 echo $patron0 > /home/$uservar/idena0/patron0
 read -p 'Enter idena1 PATRON cold wallet:' patron1
