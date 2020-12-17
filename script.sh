@@ -216,8 +216,8 @@ echo $patron1 > /home/$uservar/idena1/patron1
 
 
 
-echo '#!/bin/bash' >> home/$uservar/autopay.sh
-echo 'userdir=$uservar' >> home/$uservar/autopay.sh
+echo '#!/bin/bash' >> /home/$uservar/autopay.sh
+echo 'userdir=$uservar' >> /home/$uservar/autopay.sh
 cat >> /home/$uservar/autopay.sh <<'EOF'
 PORT=9009
 IP=`ip addr list eth0 | grep "  inet " | head -n 1 | cut -d " " -f 6 | cut -d / -f 1`
@@ -227,7 +227,7 @@ mycold=$(cat /home/$userdir/mycold)
 EOF
 
 if [ "${patron0}" != "" ]; then
-echo 'patroncold0=$(cat /home/$uservar/idena0/patron0)' >> home/$uservar/autopay.sh
+echo 'patroncold0=$(cat /home/$uservar/idena0/patron0)' >> /home/$uservar/autopay.sh
 fi
 
 cat >> /home/$uservar/autopay.sh <<'EOF'
@@ -239,11 +239,11 @@ BAL=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA2" | jq
 MOI=$(jq -n $BAL/10)
 EOF
 if [ "${patron0}" != "" ]; then
-echo 'PROFIT=$(jq -n $BAL-$MOI-$MOI-1)' >> home/$uservar/autopay.sh
-echo 'DATA31='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$patroncold0'","amount": "'$MOI'"}],"id": 1,"key": "'$API_KEY'"}'' >> home/$uservar/autopay.sh
-echo 'curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA31"' >> home/$uservar/autopay.sh
+echo 'PROFIT=$(jq -n $BAL-$MOI-$MOI-1)' >> /home/$uservar/autopay.sh
+echo 'DATA31='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$patroncold0'","amount": "'$MOI'"}],"id": 1,"key": "'$API_KEY'"}'' >> /home/$uservar/autopay.sh
+echo 'curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA31"' >> /home/$uservar/autopay.sh
 else
-echo 'PROFIT=$(jq -n $BAL-$MOI-1)' >> home/$uservar/autopay.sh
+echo 'PROFIT=$(jq -n $BAL-$MOI-1)' >> /home/$uservar/autopay.sh
 fi
 
 cat >> /home/$uservar/autopay.sh <<'EOF'
@@ -260,7 +260,7 @@ echo to : $mycold : $MOI
 EOF
 
 if [ "${patron0}" != "" ]; then
-echo 'echo to : $patroncold0 : $MOI' >> home/$uservar/autopay.sh
+echo 'echo to : $patroncold0 : $MOI' >> /home/$uservar/autopay.sh
 fi
 
 cat >> /home/$uservar/autopay.sh <<'EOF'
@@ -275,7 +275,7 @@ cold1=$(cat /home/$userdir/idena1/cold1)
 EOF
 
 if [ "${patron1}" != "" ]; then
-echo 'patroncold1=$(cat /home/$uservar/idena1/patron1)' >> home/$uservar/autopay.sh
+echo 'patroncold1=$(cat /home/$uservar/idena1/patron1)' >> /home/$uservar/autopay.sh
 fi
 
 cat >> /home/$uservar/autopay.sh <<'EOF'
@@ -286,11 +286,11 @@ BAL=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA2" | jq
 MOI=$(jq -n $BAL/10)
 EOF
 if [ "${patron0}" != "" ]; then
-echo 'PROFIT=$(jq -n $BAL-$MOI-$MOI-1)' >> home/$uservar/autopay.sh
-echo 'DATA31='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$patroncold1'","amount": "'$MOI'"}],"id": 1,"key": "'$API_KEY'"}'' >> home/$uservar/autopay.sh
-echo 'curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA31"' >> home/$uservar/autopay.sh
+echo 'PROFIT=$(jq -n $BAL-$MOI-$MOI-1)' >> /home/$uservar/autopay.sh
+echo 'DATA31='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$patroncold1'","amount": "'$MOI'"}],"id": 1,"key": "'$API_KEY'"}'' >> /home/$uservar/autopay.sh
+echo 'curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA31"' >> /home/$uservar/autopay.sh
 else
-echo 'PROFIT=$(jq -n $BAL-$MOI-1)' >> home/$uservar/autopay.sh
+echo 'PROFIT=$(jq -n $BAL-$MOI-1)' >> /home/$uservar/autopay.sh
 fi
 cat >> /home/$uservar/autopay.sh <<'EOF'
 DATA3='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$mycold'","amount": "'$MOI'"}],"id": 1,"key": "'$API_KEY'"}'
@@ -306,7 +306,7 @@ echo to : $cold1 : $PROFIT
 echo to : $mycold : $MOI 
 EOF
 if [ "${patron1}" != "" ]; then
-echo 'echo to : $patroncold1 : $MOI' >> home/$uservar/autopay.sh
+echo 'echo to : $patroncold1 : $MOI' >> /home/$uservar/autopay.sh
 fi
 
 chmod +x /home/$uservar/autopay.sh
@@ -318,8 +318,8 @@ sleep 5
 systemctl start idena0.service idena1.service
 
 EOF
-echo '#!/bin/bash' >> home/$uservar/adresses.sh
-echo 'userdir=$uservar' >> home/$uservar/adresses.sh 
+echo '#!/bin/bash' >> /home/$uservar/adresses.sh
+echo 'userdir=$uservar' >> /home/$uservar/adresses.sh 
 cat >> /home/$uservar/adresses.sh <<'EOF'
 PORT=9009
 
@@ -338,7 +338,7 @@ EOF
 chmod +x /home/$uservar/adresses.sh
 ####
 echo '#!/bin/bash' >> home/$uservar/watchdog.sh
-echo 'userdir=$uservar' >> home/$uservar/watchdog.sh
+echo 'userdir=$uservar' >> /home/$uservar/watchdog.sh
 cat >> /home/$uservar/watchdog.sh <<'EOF'
 PORT=9009
 hour=$(date +"%H")
