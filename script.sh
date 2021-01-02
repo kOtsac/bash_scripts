@@ -225,11 +225,12 @@ API_KEY=$(cat /home/$userdir/idena0/datadir/api.key)
 cold0=$(cat /home/$userdir/idena0/cold0)
 mycold=$(cat /home/$userdir/mycold)
 
+EOF
 
 if [ "${patron0}" != "" ]; then
 echo 'patroncold0=$(cat /home/$userdir/idena0/patron0)' >> /home/$uservar/autopay.sh
 fi
-
+cat >> /home/$uservar/autopay.sh <<'EOF'
 DATA='{"method": "dna_getCoinbaseAddr","params":[],"id": 8,"key":"'$API_KEY'"}'
 ADR=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA" | jq -r '.result')
 DATA2='{"method": "dna_getBalance","params":["'$ADR'"],"id": 3,"key":"'$API_KEY'"}'
@@ -241,6 +242,7 @@ cat >> /home/$uservar/autopay.sh <<'EOF'
 PROFIT=$(jq -n $BAL-$MOI-$MOI-1)
 DATA31='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$patroncold0'","amount": "'$MOI'"}],"id": 1,"key": "'$API_KEY'"}'
 curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA31"
+EOF
 else
 echo 'PROFIT=$(jq -n $BAL-$MOI-1)' >> /home/$uservar/autopay.sh
 fi
@@ -289,6 +291,7 @@ cat >> /home/$uservar/autopay.sh <<'EOF'
 PROFIT=$(jq -n $BAL-$MOI-$MOI-1)
 DATA31='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$patroncold0'","amount": "'$MOI'"}],"id": 1,"key": "'$API_KEY'"}'
 curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA31"
+EOF
 else
 echo 'PROFIT=$(jq -n $BAL-$MOI-1)' >> /home/$uservar/autopay.sh
 fi
