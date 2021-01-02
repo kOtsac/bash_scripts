@@ -276,7 +276,7 @@ cold1=$(cat /home/$userdir/idena1/cold1)
 EOF
 
 if [ "${patron1}" != "" ]; then
-echo 'patroncold1=$(cat /home/$uservar/idena1/patron1)' >> /home/$uservar/autopay.sh
+echo 'patroncold1=$(cat /home/$userdir/idena1/patron1)' >> /home/$uservar/autopay.sh
 fi
 
 cat >> /home/$uservar/autopay.sh <<'EOF'
@@ -312,14 +312,7 @@ echo 'echo to : $patroncold1 : $MOI' >> /home/$uservar/autopay.sh
 fi
 
 chmod +x /home/$uservar/autopay.sh
-cat >> /home/$uservar/update.sh << EOF
-#!/bin/bash
-systemctl stop idena0.service idena1.service
-rm -R /home/$uservar/idena0/datadir/ipfs /home/$uservar/idena0/datadir/logs/ /home/$uservar/idena1/datadir/logs/ /home/$uservar/idena1/datadir/ipfs /home/$uservar/hopr-chat/log.txt
-sleep 5
-systemctl start idena0.service idena1.service
 
-EOF
 echo '#!/bin/bash' >> /home/$uservar/adresses.sh
 echo userdir=$uservar >> /home/$uservar/adresses.sh 
 cat >> /home/$uservar/adresses.sh <<'EOF'
