@@ -224,13 +224,11 @@ IP=`ip addr list eth0 | grep "  inet " | head -n 1 | cut -d " " -f 6 | cut -d / 
 API_KEY=$(cat /home/$userdir/idena0/datadir/api.key)
 cold0=$(cat /home/$userdir/idena0/cold0)
 mycold=$(cat /home/$userdir/mycold)
-EOF
+
 
 if [ "${patron0}" != "" ]; then
-echo 'patroncold0=$(cat /home/$uservar/idena0/patron0)' >> /home/$uservar/autopay.sh
+echo 'patroncold0=$(cat /home/$userdir/idena0/patron0)' >> /home/$uservar/autopay.sh
 fi
-
-cat >> /home/$uservar/autopay.sh <<'EOF'
 
 DATA='{"method": "dna_getCoinbaseAddr","params":[],"id": 8,"key":"'$API_KEY'"}'
 ADR=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA" | jq -r '.result')
