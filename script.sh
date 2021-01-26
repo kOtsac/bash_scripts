@@ -389,7 +389,7 @@ chmod +x /home/$uservar/watchdog.sh
 ####
 echo "0 6 */3 * * /home/$uservar/autopay.sh" >> /var/spool/cron/crontabs/root
 echo "5 7 * * * /home/$uservar/erize.sh" >> /var/spool/cron/crontabs/root
-
+echo "#*/10 * * * * /home/$uservar/watchdog.sh" >> /var/spool/cron/crontabs/root
 
 service cron reload
 echo idena0 apikey
