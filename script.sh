@@ -370,7 +370,7 @@ then
         sleep 2
         cp -R /home/$userdir/idena0/datadir/idenachain.db /home/$userdir/idena1/datadir/
         sleep 2
-        chown -R $userdir:$userdir /home/$userdirc/idena1/datadir/idenachain.db
+        chown -R $userdir:$userdir /home/$userdir/idena1/datadir/idenachain.db
         systemctl restart idena1.service
         echo "idena1" `date` `$ADRS`  >> /home/$userdir/logwatch.txt
 
