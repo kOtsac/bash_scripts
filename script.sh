@@ -1,6 +1,6 @@
 #!/bin/bash
 apt update -y
-apt install tmux git jq -y
+apt install tmux git jq unzip -y
 
 # Entering variables
 
