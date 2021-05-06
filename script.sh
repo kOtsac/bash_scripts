@@ -47,7 +47,7 @@ WorkingDirectory=/home/$uservar/idena0/
 ExecStart=/home/$uservar/idena0/idena-go0 --config /home/$uservar/idena0/config.json
 Restart=on-failure
 RestartSec=60
-
+LimitNOFILE=1000000
 [Install]
 WantedBy=multi-user.target
 
@@ -66,6 +66,7 @@ WorkingDirectory=/home/$uservar/idena1/
 ExecStart=/home/$uservar/idena1/idena-go1 --config /home/$uservar/idena1/config.json
 Restart=on-failure
 RestartSec=60
+LimitNOFILE=1000000
 
 [Install]
 WantedBy=multi-user.target
