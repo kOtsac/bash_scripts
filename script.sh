@@ -287,10 +287,10 @@ DATA2='{"method": "dna_getBalance","params":["'$ADR'"],"id": 3,"key":"'$API_KEY'
 BAL=$(curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA2" | jq -r '.result.balance')
 MOI=$(jq -n $BAL/10)
 EOF
-if [ "${patron0}" != "" ]; then
+if [ "${patron1}" != "" ]; then
 cat >> /home/$uservar/autopay.sh <<'EOF'
 PROFIT=$(jq -n $BAL-$MOI-$MOI-1)
-DATA31='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$patroncold0'","amount": "'$MOI'"}],"id": 1,"key": "'$API_KEY'"}'
+DATA31='{"method": "dna_sendTransaction","params": [{"from": "'$ADR'","to": "'$patroncold1'","amount": "'$MOI'"}],"id": 1,"key": "'$API_KEY'"}'
 curl http://$IP:$PORT -H "content-type:application/json;" -d "$DATA31"
 EOF
 else
