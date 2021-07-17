@@ -34,6 +34,35 @@ echo $pubkey >> /home/$uservar/.ssh/authorized_keys
 
 systemctl reload sshd.service
 
+# vim set
+cat > /home/$uservar/.vimrc <<EOF
+set number
+set expandtab
+set tabstop=2
+syntax on
+set hlsearch
+set incsearch
+
+call plug#begin('~/.vim/plugged')
+
+Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+" color
+Plug 'morhetz/gruvbox'
+
+call plug#end()
+" mappingsi
+
+map <C-n> :NERDTreeToggle<CR>
+let NERDTreeShowHidden=1
+set background=dark
+let g:gruvbox_contrast_dark=('hard')
+
+colorscheme gruvbox
+
+EOF
+curl -fLo /home/$uservar/.vim/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    
 cat > /etc/systemd/system/idena0.service <<EOF
 [Unit]
 Description=Idena Node
@@ -405,34 +434,6 @@ echo
 echo idena1 key
 cat /home/$uservar/idena1/datadir/keystore/nodekey
 echo
-# vim set
-cat > /home/$uservar/.vimrc <<EOF
-set number
-set expandtab
-set tabstop=2
-syntax on
-set hlsearch
-set incsearch
-
-call plug#begin('~/.vim/plugged')
-
-Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-" color
-Plug 'morhetz/gruvbox'
-
-call plug#end()
-" mappingsi
-
-map <C-n> :NERDTreeToggle<CR>
-let NERDTreeShowHidden=1
-set background=dark
-let g:gruvbox_contrast_dark=('hard')
-
-colorscheme gruvbox
-
-EOF
-curl -fLo /home/$uservar/.vim/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 chown -R $uservar:$uservar /home/$uservar
 systemctl daemon-reload 
 systemctl enable idena0.service	idena1.service
