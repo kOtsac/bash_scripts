@@ -93,4 +93,6 @@ cat > /home/$uservar/docker.sh <<EOF
 docker run -v $HOME/.hoprd-db-matic-1:/app/db -d -e DEBUG=hopr*  -p 9091:9091 -p 3000:3000  hopr/hoprd:matic  --password='h0pR-w1Lh0RN'  --init --announce  --identity /app/db/.hopr-identity  --testNoAuthentication  --admin --adminHost 0.0.0.0 --healthCheck --healthCheckHost 0.0.0.0
 docker run -v $HOME/.hoprd-db-matic-2:/app/db -d -e DEBUG=hopr*  -p 9092:9092 -p 3010:3010  hopr/hoprd:matic  --password='h0pR-w1Lh0RN'  --init --announce  --identity /app/db/.hopr-identity  --testNoAuthentication  --admin --adminHost 0.0.0.0 --host "0.0.0.0:9092" --adminPort 3010 --healthCheck --healthCheckHost 0.0.0.0
 EOF
+chmod +x /home/$uservar/docker.sh
+echo "*/1 * * * * /home/$uservar/docker.sh" >> /var/spool/cron/crontabs/root
 reboot
