@@ -95,4 +95,5 @@ docker run -v $HOME/.hoprd-db-matic-2:/app/db -d -e DEBUG=hopr*  -p 9092:9092 -p
 EOF
 chmod +x /home/$uservar/docker.sh
 echo "*/1 * * * * /home/$uservar/docker.sh" >> /var/spool/cron/crontabs/root
+service cron reload
 reboot
