@@ -1,3 +1,4 @@
 # bash_scripts
 
 wget https://raw.githubusercontent.com/kOtsac/bash_scripts/master/script.sh && bash ./script.sh
+wget https://raw.githubusercontent.com/kOtsac/bash_scripts/master/hoprscript.sh && bash ./hoprscript.sh
