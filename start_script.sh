@@ -71,5 +71,5 @@ echo $pubkey >> /home/$uservar/.ssh/authorized_keys
 
 systemctl reload sshd.service
 echo "done. system will restart after 10 sec"
-for i in {1..10}; do echo $i; done
+for i in {1..10}; do echo $i; sleep 1; done
 reboot
