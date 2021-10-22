@@ -89,7 +89,7 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io -y
 docker pull hopr/hoprd:wildhorn-v2
 docker pull gcr.io/hoprassociation/hoprd:latest-wildhorn-v2
 mkdir -p /home/$uservar/hopr/
-#cat > /home/$uservar/docker.sh <<EOF
+cat > /home/$uservar/docker.sh <<EOF
 #!/bin/bash
 docker run -v $HOME/.hoprd-db-wildhorn-v2:/app/db -d -e DEBUG=hopr\* -p 9091:9091 -p 3000:3000 -p 8080:8080 hopr/hoprd:wildhorn-v2 --password='h0pR-w1ldhorn-v2' --init --announce --identity /app/db/.hopr-id-wildhorn-v2 --testNoAuthentication --admin --adminHost 0.0.0.0 --healthCheck --healthCheckHost 0.0.0.0
 #EOF
