@@ -101,4 +101,5 @@ EOF
 chmod +x /home/$uservar/docker.sh
 echo "*/1 * * * * /home/$uservar/docker.sh" >> /var/spool/cron/crontabs/root
 service cron reload
+echo Done. System will rebooted now
 reboot
