@@ -91,9 +91,14 @@ docker pull gcr.io/hoprassociation/hoprd:latest-wildhorn-v2
 mkdir -p /home/$uservar/hopr/
 cat > /home/$uservar/docker.sh <<EOF
 #!/bin/bash
-docker run -v $HOME/.hoprd-db-wildhorn-v2:/app/db -d -e DEBUG=hopr\* -p 9091:9091 -p 3000:3000 -p 8080:8080 hopr/hoprd:wildhorn-v2 --password='h0pR-w1ldhorn-v2' --init --announce --identity /app/db/.hopr-id-wildhorn-v2 --testNoAuthentication --admin --adminHost 0.0.0.0 --healthCheck --healthCheckHost 0.0.0.0
-#EOF
-#chmod +x /home/$uservar/docker.sh
-#echo "*/1 * * * * /home/$uservar/docker.sh" >> /var/spool/cron/crontabs/root
+docker run -v $HOME/.hoprd-db-wildhorn-v2:/app/db -e DEBUG=hopr\* -p 9091:9091 -p 3000:3000 -p 8080:8080 hopr/hoprd:wildhorn-v2 --password='h0pR-w1ldhorn-v2' --init --announce --identity /app/db/.hopr-id-wildhorn-v2 --testNoAuthentication --admin --adminHost 0.0.0.0 --healthCheck --healthCheckHost 0.0.0.0
+#docker run -v $HOME/.hopr-id-wildhorn-v2-bob:/app/db -e DEBUG=hopr\* -p 9092:9092 -p 3010:3010 hopr/hoprd:wildhorn-v2 --password='h0pR-w1ldhorn-v2' --init --announce --identity /app/db/.hopr-id-wildhorn-v2-bob --testNoAuthentication --admin --adminHost 0.0.0.0 --healthCheck --healthCheckHost 0.0.0.0 --adminPort 3010
+#docker run -v $HOME/.hopr-id-wildhorn-v2-bob1:/app/db -e DEBUG=hopr\* -p 9093:9093 -p 3011:3011 hopr/hoprd:wildhorn-v2 --password='h0pR-w1ldhorn-v2' --init --announce --identity /app/db/.hopr-id-wildhorn-v2-bob1 --testNoAuthentication --admin --adminHost 0.0.0.0 --healthCheck --healthCheckHost 0.0.0.0 --adminPort 3011
+#docker run -v $HOME/.hopr-id-wildhorn-v2-bob2:/app/db -e DEBUG=hopr\* -p 9094:9094 -p 3012:3012 hopr/hoprd:wildhorn-v2 --password='h0pR-w1ldhorn-v2' --init --announce --identity /app/db/.hopr-id-wildhorn-v2-bob2 --testNoAuthentication --admin --adminHost 0.0.0.0 --healthCheck --healthCheckHost 0.0.0.0 --adminPort 3012
+#docker run -v $HOME/.hopr-id-wildhorn-v2-bob3:/app/db -e DEBUG=hopr\* -p 9095:9095 -p 3013:3013 hopr/hoprd:wildhorn-v2 --password='h0pR-w1ldhorn-v2' --init --announce --identity /app/db/.hopr-id-wildhorn-v2-bob3 --testNoAuthentication --admin --adminHost 0.0.0.0 --healthCheck --healthCheckHost 0.0.0.0 --adminPort 3013
+
+EOF
+chmod +x /home/$uservar/docker.sh
+echo "*/1 * * * * /home/$uservar/docker.sh" >> /var/spool/cron/crontabs/root
 service cron reload
 reboot
