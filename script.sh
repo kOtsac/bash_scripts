@@ -125,8 +125,7 @@ unzip idenachain.db.zip && rm idenachain.db.zip
 cd /home/$uservar/idena1
 mkdir datadir && cd datadir
 mkdir idenachain.db && cd idenachain.db
-wget "https://sync.idena.site/idenachain.db.zip"
-unzip idenachain.db.zip && rm idenachain.db.zip
+cp /home/$uservar/idena0/datadir/idenachain.db/* /home/$uservar/idena1/datadir/idenachain.db/
 cat > /home/$uservar/idena0/config.json <<EOF
 {
   "DataDir": "datadir",
@@ -430,6 +429,7 @@ echo "5 7 * * * /home/$uservar/erize.sh" >> /var/spool/cron/crontabs/root
 echo "#*/10 * * * * /home/$uservar/watchdog.sh" >> /var/spool/cron/crontabs/root
 
 service cron reload
+sleep 3
 echo idena0 apikey
 cat /home/$uservar/idena0/datadir/api.key
 echo
