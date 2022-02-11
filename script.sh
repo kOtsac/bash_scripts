@@ -20,7 +20,6 @@ read -sp 'Repeat Password: ' pass1
 done
 read -p 'ssh port: ' v_ssh_port
 read -p 'Public Key: ' pubkey
-read -p 'idena version: ' version
 useradd -m -G sudo -p $(perl -e 'print crypt($ARGV[0], "password")' $pass0) -s /bin/bash $uservar
 pass0=0
 sed -i "s/#Port 22/Port $v_ssh_port/" /etc/ssh/sshd_config
@@ -114,11 +113,20 @@ EOF
 chmod +x /home/$uservar/erize.sh
 # nodes install
 mkdir /home/$uservar/idena0 /home/$uservar/idena1
-cd /home/$uservar/idena0 && wget https://github.com/idena-network/idena-go/releases/download/v$version/idena-node-linux-$version
-mv idena-node-linux-$version idena-go0
+cd /home/$uservar/idena0 && curl -s https://api.github.com/repos/idena-network/idena-go/releases/latest | grep browser_download_url | grep idena-node-linux-0.* | cut -d '"' -f 4 | wget -qi -
+mv idena-node-linux* idena-go0
 chmod +x idena-go0
 cp /home/$uservar/idena0/idena-go0 /home/$uservar/idena1/idena-go1
-
+cd /home/$uservar/idena0
+mkdir datadir && cd datadir
+mkdir idenachain.db && cd idenachain.db
+wget "https://sync.idena.site/idenachain.db.zip"
+unzip idenachain.db.zip && rm idenachain.db.zip
+cd /home/$uservar/idena1
+mkdir datadir && cd datadir
+mkdir idenachain.db && cd idenachain.db
+wget "https://sync.idena.site/idenachain.db.zip"
+unzip idenachain.db.zip && rm idenachain.db.zip
 cat > /home/$uservar/idena0/config.json <<EOF
 {
   "DataDir": "datadir",
