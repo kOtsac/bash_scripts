@@ -433,6 +433,7 @@ cd
 cat >> n_info.sh <<'EOF'
 #!/bin/bash
 uservar=$uservar
+IP=$IP
 cat /home/$uservar/idena1/datadir/keystore/nodekey
 echo http://$IP:9009 >> /home/$uservar/n_info
 cat /home/$uservar/idena0/datadir/api.key >> /home/$uservar/n_info
