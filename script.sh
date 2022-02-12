@@ -433,14 +433,25 @@ cd
 cat >> n_info.sh <<'EOF'
 #!/bin/bash
 uservar=$uservar
-IP=$IP
+IP=`ip addr list eth0 | grep "  inet " | head -n 1 | cut -d " " -f 6 | cut -d / -f 1`
+echo http://$IP:9009
+cat /home/$uservar/idena0/datadir/api.key
+cat /home/$uservar/idena0/datadir/keystore/nodekey
+echo
+echo http://$IP:9009
+cat /home/$uservar/idena1/datadir/api.key
 cat /home/$uservar/idena1/datadir/keystore/nodekey
 echo http://$IP:9009 >> /home/$uservar/n_info
 cat /home/$uservar/idena0/datadir/api.key >> /home/$uservar/n_info
+echo >> /home/$uservar/n_info
 cat /home/$uservar/idena0/datadir/keystore/nodekey >> /home/$uservar/n_info
+echo >> /home/$uservar/n_info
+echo >> /home/$uservar/n_info
 echo http://$IP:9010 >> /home/$uservar/n_info
 cat /home/$uservar/idena1/datadir/api.key >> /home/$uservar/n_info
+echo >> /home/$uservar/n_info
 cat /home/$uservar/idena1/datadir/keystore/nodekey >> /home/$uservar/n_info
+
 EOF
 chmod +x n_info.sh
 ./n_info.sh
