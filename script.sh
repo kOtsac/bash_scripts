@@ -430,10 +430,8 @@ echo "#*/10 * * * * /home/$uservar/watchdog.sh" >> /var/spool/cron/crontabs/root
 
 service cron reload
 cd
-cat >> n_info.sh <<'EOF'
+cat >> n_info.sh << EOF
 #!/bin/bash
-uservar=$uservar
-IP=`ip addr list eth0 | grep "  inet " | head -n 1 | cut -d " " -f 6 | cut -d / -f 1`
 echo http://$IP:9009
 cat /home/$uservar/idena0/datadir/api.key
 cat /home/$uservar/idena0/datadir/keystore/nodekey
