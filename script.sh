@@ -429,7 +429,7 @@ echo "5 7 * * * /home/$uservar/erize.sh" >> /var/spool/cron/crontabs/root
 echo "#*/10 * * * * /home/$uservar/watchdog.sh" >> /var/spool/cron/crontabs/root
 
 service cron reload
-sleep 3
+
 echo idena0 apikey
 cat /home/$uservar/idena0/datadir/api.key
 echo
@@ -441,6 +441,12 @@ cat /home/$uservar/idena1/datadir/api.key
 echo
 echo idena1 key
 cat /home/$uservar/idena1/datadir/keystore/nodekey
+echo http://$IP:9009 >> home/$uservar/n_info
+cat /home/$uservar/idena0/datadir/api.key >> /home/$uservar/n_info
+cat /home/$uservar/idena0/datadir/keystore/nodekey >> /home/$uservar/n_info
+echo http://$IP:9010 >> home/$uservar/n_info
+cat /home/$uservar/idena1/datadir/api.key >> /home/$uservar/n_info
+cat /home/$uservar/idena1/datadir/keystore/nodekey >> /home/$uservar/n_info
 echo
 chown -R $uservar:$uservar /home/$uservar
 systemctl daemon-reload 
