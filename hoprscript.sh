@@ -73,12 +73,19 @@ systemctl reload sshd.service
 apt-get update
 
 apt-get install \
-    apt-transport-https \
-    ca-certificates \
+         ca-certificates \
     curl \
     gnupg \
     lsb-release -y
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io
 
+
+read -p 'Node security token(it must include min 8 : letter up & down, symbol (!!! not % !!!) , numeral ): ' node_token
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 echo \
   "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
@@ -91,13 +98,15 @@ docker pull gcr.io/hoprassociation/hoprd:latest-wildhorn-v2
 mkdir -p /home/$uservar/hopr/
 cat > /home/$uservar/docker.sh <<EOF
 #!/bin/bash
-docker run -v $HOME/.hoprd-db-wildhorn-v2:/app/db -e DEBUG=hopr\* -p 9091:9091 -p 3000:3000 -p 8080:8080 hopr/hoprd:wildhorn-v2 --password='h0pR-w1ldhorn-v2' --init --announce --identity /app/db/.hopr-id-wildhorn-v2 --testNoAuthentication --admin --adminHost 0.0.0.0 --healthCheck --healthCheckHost 0.0.0.0
-#docker run -v $HOME/.hopr-id-wildhorn-v2-bob:/app/db -e DEBUG=hopr\* -p 9092:9092 -p 3010:3010 hopr/hoprd:wildhorn-v2 --password='h0pR-w1ldhorn-v2' --init --announce --identity /app/db/.hopr-id-wildhorn-v2-bob --testNoAuthentication --admin --adminHost 0.0.0.0 --healthCheck --healthCheckHost 0.0.0.0 --adminPort 3010
-#docker run -v $HOME/.hopr-id-wildhorn-v2-bob1:/app/db -e DEBUG=hopr\* -p 9093:9093 -p 3011:3011 hopr/hoprd:wildhorn-v2 --password='h0pR-w1ldhorn-v2' --init --announce --identity /app/db/.hopr-id-wildhorn-v2-bob1 --testNoAuthentication --admin --adminHost 0.0.0.0 --healthCheck --healthCheckHost 0.0.0.0 --adminPort 3011
-#docker run -v $HOME/.hopr-id-wildhorn-v2-bob2:/app/db -e DEBUG=hopr\* -p 9094:9094 -p 3012:3012 hopr/hoprd:wildhorn-v2 --password='h0pR-w1ldhorn-v2' --init --announce --identity /app/db/.hopr-id-wildhorn-v2-bob2 --testNoAuthentication --admin --adminHost 0.0.0.0 --healthCheck --healthCheckHost 0.0.0.0 --adminPort 3012
-#docker run -v $HOME/.hopr-id-wildhorn-v2-bob3:/app/db -e DEBUG=hopr\* -p 9095:9095 -p 3013:3013 hopr/hoprd:wildhorn-v2 --password='h0pR-w1ldhorn-v2' --init --announce --identity /app/db/.hopr-id-wildhorn-v2-bob3 --testNoAuthentication --admin --adminHost 0.0.0.0 --healthCheck --healthCheckHost 0.0.0.0 --adminPort 3013
-
+docker run -d  --pull always -ti -v $uservar/.hoprd-db:/app/db -p 9091:9091 -p 3000:3000 -p 3001:3001 gcr.io/hoprassociation/hoprd:athens --admin --password 'open-sesame-iTwnsPNg0hpagP+o6T0KOwiH9RQ0' --init --rest --restHost "0.0.0.0" --restPort 3001 --identity /app/db/.hopr-id-athens --apiToken '$node_token' --adminHost "0.0.0.0" --adminPort 3000 --host "0.0.0.0:9091"
+#docker run -d  --pull always -ti -v $uservar/.hoprd-db-bob:/app/db -p 9091:9091 -p 3000:3000 -p 3001:3001 gcr.io/hoprassociation/hoprd:athens --admin --password 'open-sesame-iTwnsPNg0hpagP+o6T0KOwiH9RQ0' --init --rest --restHost "0.0.0.0" --restPort 3001 --identity /app/db/.hopr-id-athens --apiToken '$node_token' --adminHost "0.0.0.0" --adminPort 3000 --host "0.0.0.0:9091"
+#docker run -d  --pull always -ti -v $uservar/.hoprd-db-alice:/app/db -p 9091:9091 -p 3000:3000 -p 3001:3001 gcr.io/hoprassociation/hoprd:athens --admin --password 'open-sesame-iTwnsPNg0hpagP+o6T0KOwiH9RQ0' --init --rest --restHost "0.0.0.0" --restPort 3001 --identity /app/db/.hopr-id-athens --apiToken '$node_token' --adminHost "0.0.0.0" --adminPort 3000 --host "0.0.0.0:9091"
 EOF
+cat > /home/$uservar/stop_docker.sh <<EOF
+#!/bin/bash
+sudo docker stop $(sudo docker ps -q)
+EOF
+chmod +x /home/$uservar/stop_docker.sh
 chmod +x /home/$uservar/docker.sh
 echo "*/1 * * * * /home/$uservar/docker.sh" >> /var/spool/cron/crontabs/root
 service cron reload
