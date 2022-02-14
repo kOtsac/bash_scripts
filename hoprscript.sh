@@ -91,11 +91,11 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io -y
 
 cat > /home/$uservar/docker.sh <<EOF
 #!/bin/bash
-docker run -d  --pull always -ti -v $uservar/.hoprd-db:/app/db -p 9091:9091 -p 3000:3000 -p 3001:3001 gcr.io/hoprassociation/hoprd:athens --admin --password 'open-sesame-iTwnsPNg0hpagP+o6T0KOwiH9RQ0' --init --rest --restHost "0.0.0.0" --restPort 3001 --identity /app/db/.hopr-id-athens --apiToken '$node_token' --adminHost "0.0.0.0" --adminPort 3000 --host "0.0.0.0:9091"
-#docker run -d  --pull always -ti -v $uservar/.hoprd-db-bob:/app/db -p 9091:9091 -p 3000:3000 -p 3001:3001 gcr.io/hoprassociation/hoprd:athens --admin --password 'open-sesame-iTwnsPNg0hpagP+o6T0KOwiH9RQ0' --init --rest --restHost "0.0.0.0" --restPort 3001 --identity /app/db/.hopr-id-athens --apiToken '$node_token' --adminHost "0.0.0.0" --adminPort 3000 --host "0.0.0.0:9091"
-#docker run -d  --pull always -ti -v $uservar/.hoprd-db-alice:/app/db -p 9091:9091 -p 3000:3000 -p 3001:3001 gcr.io/hoprassociation/hoprd:athens --admin --password 'open-sesame-iTwnsPNg0hpagP+o6T0KOwiH9RQ0' --init --rest --restHost "0.0.0.0" --restPort 3001 --identity /app/db/.hopr-id-athens --apiToken '$node_token' --adminHost "0.0.0.0" --adminPort 3000 --host "0.0.0.0:9091"
+docker run -d  --pull always -ti -v /home/$uservar/.hoprd-db:/app/db -p 9091:9091 -p 3000:3000 -p 3001:3001 gcr.io/hoprassociation/hoprd:athens --admin --password 'open-sesame-iTwnsPNg0hpagP+o6T0KOwiH9RQ0' --init --rest --restHost "0.0.0.0" --restPort 3001 --identity /app/db/.hopr-id-athens --apiToken '$node_token' --adminHost "0.0.0.0" --adminPort 3000 --host "0.0.0.0:9091"
+#docker run -d  --pull always -ti -v /home/$uservar/.hoprd-db-bob:/app/db -p 9091:9091 -p 3000:3000 -p 3001:3001 gcr.io/hoprassociation/hoprd:athens --admin --password 'open-sesame-iTwnsPNg0hpagP+o6T0KOwiH9RQ0' --init --rest --restHost "0.0.0.0" --restPort 3001 --identity /app/db/.hopr-id-athens --apiToken '$node_token' --adminHost "0.0.0.0" --adminPort 3000 --host "0.0.0.0:9091"
+#docker run -d  --pull always -ti -v /home/$uservar/.hoprd-db-alice:/app/db -p 9091:9091 -p 3000:3000 -p 3001:3001 gcr.io/hoprassociation/hoprd:athens --admin --password 'open-sesame-iTwnsPNg0hpagP+o6T0KOwiH9RQ0' --init --rest --restHost "0.0.0.0" --restPort 3001 --identity /app/db/.hopr-id-athens --apiToken '$node_token' --adminHost "0.0.0.0" --adminPort 3000 --host "0.0.0.0:9091"
 EOF
-cat > /home/$uservar/stop_docker.sh <<EOF
+cat > /home/$uservar/stop_docker.sh <<'EOF'
 #!/bin/bash
 sudo docker stop $(sudo docker ps -q)
 EOF
