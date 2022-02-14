@@ -77,12 +77,7 @@ apt-get install \
     curl \
     gnupg \
     lsb-release -y
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt-get update
-sudo apt-get install docker-ce docker-ce-cli containerd.io
+
 
 
 read -p 'Node security token(it must include min 8 : letter up & down, symbol (!!! not % !!!) , numeral ): ' node_token
@@ -93,9 +88,7 @@ echo \
 apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io -y
 
-docker pull hopr/hoprd:wildhorn-v2
-docker pull gcr.io/hoprassociation/hoprd:latest-wildhorn-v2
-mkdir -p /home/$uservar/hopr/
+
 cat > /home/$uservar/docker.sh <<EOF
 #!/bin/bash
 docker run -d  --pull always -ti -v $uservar/.hoprd-db:/app/db -p 9091:9091 -p 3000:3000 -p 3001:3001 gcr.io/hoprassociation/hoprd:athens --admin --password 'open-sesame-iTwnsPNg0hpagP+o6T0KOwiH9RQ0' --init --rest --restHost "0.0.0.0" --restPort 3001 --identity /app/db/.hopr-id-athens --apiToken '$node_token' --adminHost "0.0.0.0" --adminPort 3000 --host "0.0.0.0:9091"
