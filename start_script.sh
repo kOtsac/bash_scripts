@@ -35,33 +35,33 @@ fallocate -l $swap_memory /swapfile2 && sudo chmod 600 /swapfile2 && sudo mkswap
 #Broutforce difence
 
 
-#iptables -A INPUT -p tcp -m tcp --dport $v_ssh_port -m state --state NEW -m hashlimit --hashlimit 1/hour --hashlimit-burst 2 --hashlimit-mode srcip --hashlimit-name SSH --hashlimit-htable-expire 60000 -j ACCEPT
+iptables -A INPUT -p tcp -m tcp --dport $v_ssh_port -m state --state NEW -m hashlimit --hashlimit 1/hour --hashlimit-burst 2 --hashlimit-mode srcip --hashlimit-name SSH --hashlimit-htable-expire 60000 -j ACCEPT
 
-#iptables -A INPUT -p tcp -m tcp --dport $v_ssh_port --tcp-flags SYN,RST,ACK SYN -j DROP
+iptables -A INPUT -p tcp -m tcp --dport $v_ssh_port --tcp-flags SYN,RST,ACK SYN -j DROP
 
-#iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport $v_ssh_port -j ACCEPT
+iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport $v_ssh_port -j ACCEPT
 
-#mkdir /etc/iptables
+mkdir /etc/iptables
 
-#iptables-save > /etc/iptables/iptables.rules
+iptables-save > /etc/iptables/iptables.rules
 
-#cat >> /etc/systemd/system/iptables-rules-restore.service <<EOF
-#[Unit]
-#Description = Apply iptables rules
-#[Service]
-#Type=oneshot
-#ExecStart=/bin/sh -c 'iptables-restore < /etc/iptables/iptables.rules'
-#[Install]
-#WantedBy=network-pre.target
-#EOF
+cat >> /etc/systemd/system/iptables-rules-restore.service <<EOF
+[Unit]
+Description = Apply iptables rules
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c 'iptables-restore < /etc/iptables/iptables.rules'
+[Install]
+WantedBy=network-pre.target
+EOF
 
-#chmod +x /etc/systemd/system/iptables-rules-restore.service
+chmod +x /etc/systemd/system/iptables-rules-restore.service
 
-#systemctl enable iptables-rules-restore.service
+systemctl enable iptables-rules-restore.service
 
-#systemctl daemon-reload
+systemctl daemon-reload
 
-#systemctl start iptables-rules-restore.service
+systemctl start iptables-rules-restore.service
 
 ###
 
