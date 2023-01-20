@@ -27,6 +27,7 @@ sed -i "s/PasswordAuthentication yes/PasswordAuthentication no/" /etc/ssh/sshd_c
 sed -i "s/UsePAM yes/UsePAM no/" /etc/ssh/sshd_config
 sed -i "s/PermitRootLogin yes/PermitRootLogin no/" /etc/ssh/sshd_config
 sed -i "s/passwordauthentication yes/PasswordAuthentication no/" /etc/ssh/sshd_config
+sed -i "s/PasswordAuthentication yes/PasswordAuthentication no/" /etc/ssh/sshd_config.d/50-cloud-init.conf
 #swap memory
 read -p 'Size of swap memory. for example: 1G  : ' swap_memory
 fallocate -l $swap_memory /swapfile2 && sudo chmod 600 /swapfile2 && sudo mkswap /swapfile2 && sudo swapon /swapfile2 && echo '/swapfile2 none swap sw 0 0' | sudo tee -a /etc/fstab
